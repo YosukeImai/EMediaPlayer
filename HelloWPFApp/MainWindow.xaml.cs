@@ -122,6 +122,10 @@ namespace HelloWPFApp
 
         private void Slider_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
+            //Playerが利用不可
+            if (!AvailablePlayer())
+                return;
+
             Console.WriteLine("Slider_PreviewMouseDown");
             canChangeTimespan = true;
 
@@ -134,6 +138,10 @@ namespace HelloWPFApp
 
         private void Slider_PreviewMouseUp(object sender, MouseButtonEventArgs e)
         {
+            //Playerが利用不可
+            if (!AvailablePlayer())
+                return;
+
             Console.WriteLine("Slider_PreviewMouseUp");
             canChangeTimespan = false;
             Play();
@@ -231,6 +239,7 @@ namespace HelloWPFApp
 
         private void Pause()
         {
+
             myMediaElement.Pause();
             mediaState = MediaState.Pause;
         }
