@@ -120,8 +120,10 @@ namespace HelloWPFApp
             }
         }
 
+        
         private void Slider_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
+
             //Playerが利用不可
             if (!AvailablePlayer())
                 return;
@@ -130,10 +132,20 @@ namespace HelloWPFApp
             canChangeTimespan = true;
 
             Point p = e.GetPosition(timelineSlider);
-            double v = timelineSlider.Maximum * (double)p.X / (double)timelineSlider.ActualWidth;
-            timelineSlider.Value = v;
+
+            SetSliderPositionOnMouse(p);
 
             Pause();
+        }
+
+        private void Slider_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (!canChangeTimespan)
+                return;
+
+            Point p = e.GetPosition(timelineSlider);
+
+            SetSliderPositionOnMouse(p);
         }
 
         private void Slider_PreviewMouseUp(object sender, MouseButtonEventArgs e)
@@ -261,5 +273,13 @@ namespace HelloWPFApp
         {
             return myMediaElement.Source != null;
         }
+
+        private void SetSliderPositionOnMouse(Point point)
+        {       
+            double v = timelineSlider.Maximum * (double)point.X / (double)timelineSlider.ActualWidth;
+            timelineSlider.Value = v;
+        }
+
+        
     }
 }
