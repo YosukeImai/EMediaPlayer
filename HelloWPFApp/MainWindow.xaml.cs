@@ -119,11 +119,9 @@ namespace HelloWPFApp
                 myMediaElement.Position = ts;
             }
         }
-
         
         private void Slider_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
-
             //Playerが利用不可
             if (!AvailablePlayer())
                 return;
@@ -271,7 +269,7 @@ namespace HelloWPFApp
 
         private bool AvailablePlayer()
         {
-            return myMediaElement.Source != null;
+            return myMediaElement.HasAudio;
         }
 
         private void SetSliderPositionOnMouse(Point point)

@@ -5,12 +5,13 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:HelloWPFApp"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800" Drop="Window_Drop" KeyDown="Window_KeyDown" AllowDrop="True">
+        Title="MainWindow" Height="450" Width="800" Drop="Window_Drop" KeyDown="Window_KeyDown" AllowDrop="True" Background="Black">
     <Grid>
-        <MediaElement x:Name="myMediaElement" Margin="0,56,0,0" MediaOpened="Element_MediaOpened" MediaEnded="Element_MediaEnded"/>
-        <Slider x:Name="timelineSlider" Margin="10,30,10,0" VerticalAlignment="Top" 
+        <Grid  Margin="0,0,0,305" VerticalAlignment="Top" Height="50" Background="White">
+            <Slider x:Name="timelineSlider" Margin="10,30,10,0" VerticalAlignment="Top" Cursor="Hand"
                 ValueChanged="Slider_ValueChanged" PreviewMouseDown="Slider_PreviewMouseDown"  PreviewMouseUp="Slider_PreviewMouseUp" MouseMove="Slider_MouseMove"/>
-        <TextBlock x:Name="timelineBlock" Margin="583,12,10,0" Text="TextBlock" TextWrapping="Wrap" VerticalAlignment="Top" HorizontalAlignment="Right"/>
-
+            <TextBlock x:Name="timelineBlock" Margin="583,12,10,0" Text="TextBlock" TextWrapping="Wrap" VerticalAlignment="Top" HorizontalAlignment="Right"/>
+        </Grid>
+        <MediaElement x:Name="myMediaElement"  Margin="0,50,0,0" MediaOpened="Element_MediaOpened" MediaEnded="Element_MediaEnded"/>
     </Grid>
 </Window>
