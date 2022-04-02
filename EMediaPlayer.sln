@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.32002.261
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EMediaPlayer", "HelloWPFApp\EMediaPlayer.csproj", "{DAE076ED-7444-4159-AA10-FD1ED4DD104C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EMediaPlayer", "EMediaPlayer\EMediaPlayer.csproj", "{DAE076ED-7444-4159-AA10-FD1ED4DD104C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
