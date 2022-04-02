@@ -21,8 +21,8 @@ namespace HelloWPFApp
     /// </summary>
     public partial class MainWindow : Window
     {
-        //Mediaのタイムスパンを変更していいか
-        private bool canChangeTimespan = false;
+        //スライダー編集中か
+        private bool isEditingSlider = false;
 
         private MediaState mediaState;
         //private MediaState preMediaState;
@@ -107,18 +107,6 @@ namespace HelloWPFApp
         {
             PlayNextMedia();
         }
-
-        private void Slider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-        {
-            if (canChangeTimespan)
-            {
-                TimeSpan ts = new TimeSpan(0, 0, 0, 0,(int)timelineSlider.Value);
-
-                Pause();
-
-                myMediaElement.Position = ts;
-            }
-        }
         
         private void Slider_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
@@ -126,24 +114,26 @@ namespace HelloWPFApp
             if (!AvailablePlayer())
                 return;
 
-            Console.WriteLine("Slider_PreviewMouseDown");
-            canChangeTimespan = true;
+            //スライダー編集中とする
+            isEditingSlider = true;
 
+            //スライダーを自分の位置に編集
             Point p = e.GetPosition(timelineSlider);
+            SetSliderValueFromMousePosition(p);
 
-            SetSliderPositionOnMouse(p);
+            SetMediaPositionFromSliderValue();
 
             Pause();
         }
 
         private void Slider_MouseMove(object sender, MouseEventArgs e)
         {
-            if (!canChangeTimespan)
+            //Playerが利用不可またはスライダーが編集中ではない
+            if (!AvailablePlayer() || !isEditingSlider)
                 return;
 
-            Point p = e.GetPosition(timelineSlider);
+            SetMediaPositionFromSliderValue();
 
-            SetSliderPositionOnMouse(p);
         }
 
         private void Slider_PreviewMouseUp(object sender, MouseButtonEventArgs e)
@@ -152,13 +142,23 @@ namespace HelloWPFApp
             if (!AvailablePlayer())
                 return;
 
-            Console.WriteLine("Slider_PreviewMouseUp");
-            canChangeTimespan = false;
+            //スライダーを自分の位置に編集
+            Point p = e.GetPosition(timelineSlider);
+            SetSliderValueFromMousePosition(p);
+
+            SetMediaPositionFromSliderValue();
+
+            //タイムスパンの編集を不可にして動画再開
+            isEditingSlider = false;
             Play();
         }
 
         private void SliderTimer_Tick(object sender,EventArgs e)
         {
+            //スライダー編集中か
+            if (isEditingSlider)
+                return;
+
             switch (mediaState)
             {
                 case MediaState.Play:
@@ -272,12 +272,22 @@ namespace HelloWPFApp
             return myMediaElement.HasAudio;
         }
 
-        private void SetSliderPositionOnMouse(Point point)
-        {       
-            double v = timelineSlider.Maximum * (double)point.X / (double)timelineSlider.ActualWidth;
-            timelineSlider.Value = v;
-        }
+        private void SetMediaPositionFromSliderValue()
+        {
+            if (isEditingSlider)
+            {
+                TimeSpan ts = new TimeSpan(0, 0, 0, 0, (int)timelineSlider.Value);
 
+                myMediaElement.Position = ts;
+            }
+        }  
         
+        private void SetSliderValueFromMousePosition(Point p)
+        {
+            //スライダーを自分の位置に編集
+            double slidervalue = p.X / timelineSlider.ActualWidth * timelineSlider.Maximum;
+            timelineSlider.Value = slidervalue;
+
+        }
     }
 }
