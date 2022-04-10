@@ -21,8 +21,8 @@ namespace HelloWPFApp
     /// </summary>
     public partial class MainWindow : Window
     {
-        //スライダー編集中か
-        private bool isEditingSlider = false;
+        //SeekBar編集中か
+        private bool canEditingSeekBar = false;
 
         private MediaState mediaState;
         //private MediaState preMediaState;
@@ -33,6 +33,15 @@ namespace HelloWPFApp
 
         //スライダー更新用タイマー
         private DispatcherTimer sliderTimer;
+
+        //メディアの総時間（ミリ秒）
+        private double mediaMaxValue = 0.0;
+
+        //マウスの現在地（キャンバスの相対値）
+        private Point mousePoint = new Point();
+
+        //シークバーに触れているか
+        private bool isTouchSeekBar = false;
 
         public MainWindow()
         {
@@ -53,6 +62,9 @@ namespace HelloWPFApp
                 Array.Copy(args, 1, paths, 0, paths.Length);
                 PlayFirstMedia();
             }
+
+            //メディアバー作成
+            BuildSeekBar();
         }
 
 
@@ -61,7 +73,7 @@ namespace HelloWPFApp
         {
             paths = (string[])e.Data.GetData(DataFormats.FileDrop);
 
-            if(paths !=null && paths.Length != 0)
+            if(paths != null && paths.Length != 0)
             {
                 PlayFirstMedia();
             }
@@ -100,69 +112,96 @@ namespace HelloWPFApp
 
         private void Element_MediaOpened(object sender, EventArgs e)
         {
-            timelineSlider.Maximum = myMediaElement.NaturalDuration.TimeSpan.TotalMilliseconds;
+            //メディアの最大値をミリセカンドの総数で割り当てる
+            mediaMaxValue = myMediaElement.NaturalDuration.TimeSpan.TotalMilliseconds;
+
+            BuildSeekBar();
         }
 
         private void Element_MediaEnded(object sender, EventArgs e)
         {
             PlayNextMedia();
         }
-        
-        private void Slider_PreviewMouseDown(object sender, MouseButtonEventArgs e)
+
+        private void Canvas_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
             //Playerが利用不可
             if (!AvailablePlayer())
                 return;
 
-            //スライダー編集中とする
-            isEditingSlider = true;
+            //SeekBarに触れてる場合はSeekBar編集可能
+            canEditingSeekBar = isTouchSeekBar;
 
-            //スライダーを自分の位置に編集
-            Point p = e.GetPosition(timelineSlider);
-            SetSliderValueFromMousePosition(p);
-
-            SetMediaPositionFromSliderValue();
-
-            Pause();
+            //SeekBarを編集可能
+            if (canEditingSeekBar)
+            {
+                //メディアの再生位置を変更
+                SetMediaPositionFromMousePosition();
+                //一時停止
+                Pause();
+            }
         }
 
-        private void Slider_MouseMove(object sender, MouseEventArgs e)
-        {
-            //Playerが利用不可またはスライダーが編集中ではない
-            if (!AvailablePlayer() || !isEditingSlider)
-                return;
-
-            SetMediaPositionFromSliderValue();
-
-        }
-
-        private void Slider_PreviewMouseUp(object sender, MouseButtonEventArgs e)
+        private void Canvas_MouseMove(object sender, MouseEventArgs e)
         {
             //Playerが利用不可
             if (!AvailablePlayer())
                 return;
 
-            //スライダーを自分の位置に編集
-            Point p = e.GetPosition(timelineSlider);
-            SetSliderValueFromMousePosition(p);
+            //マウスの現在地を割り当てる
+            mousePoint = e.GetPosition(seekBarCanvas);
 
-            SetMediaPositionFromSliderValue();
+            //SeekBarのあたり判定（上下10ピクセルかつ左右0ピクセル以下が閾値）
+            isTouchSeekBar = Math.Abs(mousePoint.Y - Line1.Y1) <= 10.0 &
+                Line1.X1 <= mousePoint.X & mousePoint.X <= Line2.X2;
 
-            //タイムスパンの編集を不可にして動画再開
-            isEditingSlider = false;
+            //SeekBar編集中か
+            if (canEditingSeekBar)
+            {
+                //メディアのポジションを変更する
+                SetMediaPositionFromMousePosition();
+            }
+
+            //SeekBar再描画
+            BuildSeekBar();
+        }
+
+        private void Canvas_MouseLeave(object sender, MouseEventArgs e)
+        {
+            //SeekBarのあたり判定をFalseにする
+            isTouchSeekBar = false;
+
+            //SeekBar編集中
+            if(canEditingSeekBar)
+            {
+                canEditingSeekBar = false;
+                Play();
+            }
+        }
+
+        private void Canvas_PreviewMouseUp(object sender, MouseButtonEventArgs e)
+        {
+            //Playerが利用不可
+            if (!AvailablePlayer())
+                return;
+
+            //SeekBarを未編集状態にする
+            canEditingSeekBar = false;
+
+            //再生開始
             Play();
         }
 
         private void SliderTimer_Tick(object sender,EventArgs e)
         {
-            //スライダー編集中か
-            if (isEditingSlider)
+            //SeekBar編集可能か
+            if (canEditingSeekBar)
                 return;
 
             switch (mediaState)
             {
                 case MediaState.Play:
-                    SetSliderValue();
+                    BuildSeekBar();
                     SetTimelineBlock();
                     break;
                 default:
@@ -254,13 +293,6 @@ namespace HelloWPFApp
             mediaState = MediaState.Pause;
         }
 
-        private void SetSliderValue()
-        {
-            TimeSpan ts = myMediaElement.Position;
-            timelineSlider.Value = ts.TotalMilliseconds;
-
-        }
-
         private void SetTimelineBlock()
         {
             TimeSpan ts = myMediaElement.Position;
@@ -271,23 +303,35 @@ namespace HelloWPFApp
         {
             return myMediaElement.HasAudio;
         }
-
-        private void SetMediaPositionFromSliderValue()
-        {
-            if (isEditingSlider)
-            {
-                TimeSpan ts = new TimeSpan(0, 0, 0, 0, (int)timelineSlider.Value);
-
-                myMediaElement.Position = ts;
-            }
-        }  
         
-        private void SetSliderValueFromMousePosition(Point p)
+        private void SetMediaPositionFromMousePosition()
         {
-            //スライダーを自分の位置に編集
-            double slidervalue = p.X / timelineSlider.ActualWidth * timelineSlider.Maximum;
-            timelineSlider.Value = slidervalue;
+            double d = (mousePoint.X - Line1.X1) / (Line2.X2 - Line1.X1) * mediaMaxValue;
+            int milliSecond = d < 0 ? 0 : (int)d;
+            TimeSpan ts = new TimeSpan(0, 0, 0, 0, milliSecond);
 
+            myMediaElement.Position = ts;
+        }
+        
+        private void BuildSeekBar()
+        {
+            double maxValue = mediaMaxValue;
+            double currentValue = myMediaElement.Position.TotalMilliseconds;
+
+            double width = seekBarCanvas.ActualWidth - Line1.X1 * 2;
+
+            Line1.X2 = Line2.X1 = maxValue == 0 ? Line1.X1 : currentValue / maxValue * width;
+
+
+            //円描画
+            double radius = isTouchSeekBar ? 5 : 0;
+            double left = mousePoint.X - radius;
+            double top = Line1.Y1 - radius;
+
+            Circle1.Width = Circle1.Height = radius * 2;
+            Circle1.Margin = new Thickness(left, top, 0, 0);
+
+            Line2.X2 = width;
         }
     }
 }

@@ -7,10 +7,25 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800" Drop="Window_Drop" KeyDown="Window_KeyDown" AllowDrop="True" Background="Black">
     <Grid>
-        <Grid  Margin="0,0,0,305" VerticalAlignment="Top" Height="50" Background="White">
-            <Slider x:Name="timelineSlider" Margin="10,30,10,0" VerticalAlignment="Top" Cursor="Hand"
-                PreviewMouseDown="Slider_PreviewMouseDown"  PreviewMouseUp="Slider_PreviewMouseUp" MouseMove="Slider_MouseMove"/>
-            <TextBlock x:Name="timelineBlock" Margin="583,12,10,0" Text="TextBlock" TextWrapping="Wrap" VerticalAlignment="Top" HorizontalAlignment="Right"/>
+        <Grid  Margin="0,0,0,305" VerticalAlignment="Top" Height="50" Background="White" >
+            <TextBlock x:Name="timelineBlock" Margin="583,5,10,0" Text="TextBlock" TextWrapping="Wrap" VerticalAlignment="Top" HorizontalAlignment="Right"/>
+            <Canvas x:Name="seekBarCanvas" Background="White" Margin="0,20,0,0"  
+                    MouseMove="Canvas_MouseMove" MouseLeave="Canvas_MouseLeave" PreviewMouseDown="Canvas_PreviewMouseDown" PreviewMouseUp="Canvas_PreviewMouseUp">
+                <Line x:Name="Line1"
+                    X1="10" Y1="10"
+                    X2="100" Y2="10"
+                    Stroke="Red"
+                    StrokeThickness="4"/>
+                <Line x:Name="Line2"
+                    X1="100" Y1="10"
+                    X2="300" Y2="10"
+                    Stroke="Black"
+                    StrokeThickness="2"/>
+                <Ellipse x:Name="Circle1"
+                         Width="0" 
+                         Height="0" 
+                         Fill="Red"/>
+            </Canvas>
         </Grid>
         <MediaElement x:Name="myMediaElement"  Margin="0,50,0,0" MediaOpened="Element_MediaOpened" MediaEnded="Element_MediaEnded"/>
     </Grid>
