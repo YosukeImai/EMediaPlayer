@@ -62,12 +62,13 @@ namespace HelloWPFApp
                 Array.Copy(args, 1, paths, 0, paths.Length);
                 PlayFirstMedia();
             }
-
-            //メディアバー作成
-            BuildSeekBar();
         }
 
-
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            //SeekBar描画
+            BuildSeekBar();
+        }
 
         private void Window_Drop(object sender, DragEventArgs e)
         {
@@ -137,6 +138,10 @@ namespace HelloWPFApp
             {
                 //メディアの再生位置を変更
                 SetMediaPositionFromMousePosition();
+
+                //再描画
+                BuildSeekBar();
+
                 //一時停止
                 Pause();
             }
@@ -209,6 +214,12 @@ namespace HelloWPFApp
                     sliderTimer.Stop();
                     break;
             }
+        }
+
+        private void Canvas_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            //SeekBar再描画
+            BuildSeekBar();
         }
 
         private void InitializeTimer()
@@ -320,7 +331,7 @@ namespace HelloWPFApp
 
             double width = seekBarCanvas.ActualWidth - Line1.X1 * 2;
 
-            Line1.X2 = Line2.X1 = maxValue == 0 ? Line1.X1 : currentValue / maxValue * width;
+            Line1.X2 = Line2.X1 = maxValue == 0 ? Line1.X1 : width * currentValue / maxValue +5;
 
 
             //円描画
