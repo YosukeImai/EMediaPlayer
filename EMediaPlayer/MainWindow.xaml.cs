@@ -222,6 +222,18 @@ namespace HelloWPFApp
             BuildSeekBar();
         }
 
+        private void Element_MouseDown(object sender, MouseEventArgs e)
+        {
+            //Playerが利用不可
+            if (!AvailablePlayer())
+                return;
+
+            if (mediaState == MediaState.Play)
+                Pause();
+            else
+                Play();
+        }
+
         private void InitializeTimer()
         {
             sliderTimer = new DispatcherTimer();

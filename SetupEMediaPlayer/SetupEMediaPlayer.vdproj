@@ -76,6 +76,14 @@
             "PrerequisitesLocation" = "2:1"
             "Url" = "8:"
             "ComponentsUrl" = "8:"
+                "Items"
+                {
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:.NETFramework,Version=v4.7.2"
+                    {
+                    "Name" = "8:Microsoft .NET Framework 4.7.2 (x86 and x64)"
+                    "ProductCode" = "8:.NETFramework,Version=v4.7.2"
+                    }
+                }
             }
         }
     }
@@ -165,7 +173,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:EMediaPlayer"
         "ProductCode" = "8:{EB60A4D0-13A1-422D-B706-5009D8D6971C}"
-        "PackageCode" = "8:{76754446-43FC-46AE-A2F6-2C9AF2114E26}"
+        "PackageCode" = "8:{32571BB5-8B96-42B6-9EBB-2A301C2094AC}"
         "UpgradeCode" = "8:{12C58FC5-7E32-4115-903B-E2651643B803}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
@@ -700,7 +708,7 @@
         {
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_564B8D6CC003421D85196AE408A2F025"
             {
-            "SourcePath" = "8:..\\EMediaPlayer\\obj\\Debug\\net5.0-windows\\apphost.exe"
+            "SourcePath" = "8:..\\EMediaPlayer\\obj\\Release\\net5.0-windows\\apphost.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_A3BFE1EFE9CF45789B26F7E7439A479B"

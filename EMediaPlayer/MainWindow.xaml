@@ -28,6 +28,6 @@
                          Fill="Red"/>
             </Canvas>
         </Grid>
-        <MediaElement x:Name="myMediaElement"  Margin="0,50,0,0" MediaOpened="Element_MediaOpened" MediaEnded="Element_MediaEnded"/>
+        <MediaElement x:Name="myMediaElement"  Margin="0,50,0,0" MediaOpened="Element_MediaOpened" MediaEnded="Element_MediaEnded" MouseDown="Element_MouseDown"/>
     </Grid>
 </Window>
