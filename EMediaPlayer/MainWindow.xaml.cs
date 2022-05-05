@@ -1,4 +1,5 @@
-﻿using System;
+﻿using EMediaPlayer;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -43,8 +44,13 @@ namespace HelloWPFApp
         //シークバーに触れているか
         private bool isTouchSeekBar = false;
 
+        private SettingParameters settingParameters;
+
         public MainWindow()
         {
+            //Read setting values
+            settingParameters = new SettingParameters();
+
             //コマンドライン引数を取得
             string[] args = Environment.GetCommandLineArgs();
             int argsLen = args.Length;
@@ -62,6 +68,8 @@ namespace HelloWPFApp
                 Array.Copy(args, 1, paths, 0, paths.Length);
                 PlayFirstMedia();
             }
+
+            SetWindowSizeInit();
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -218,8 +226,9 @@ namespace HelloWPFApp
 
         private void Canvas_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            //SeekBar再描画
             BuildSeekBar();
+
+            SetWindowSizeParameters();
         }
 
         private void Element_MouseDown(object sender, MouseEventArgs e)
@@ -355,6 +364,25 @@ namespace HelloWPFApp
             Circle1.Margin = new Thickness(left, top, 0, 0);
 
             Line2.X2 = width;
+        }
+
+        private void SetWindowSizeInit()
+        {
+            if (settingParameters.WindowWidth != 0)
+                this.Width = settingParameters.WindowWidth;
+            if (settingParameters.WindowHeight != 0)
+                this.Height = settingParameters.WindowHeight;
+        }
+
+        private void SetWindowSizeParameters()
+        {
+            settingParameters.WindowWidth = this.Width;
+            settingParameters.WindowHeight = this.Height;
+        }
+
+        private void Window_Closed(object sender, EventArgs e)
+        {
+            settingParameters.SaveSettingParameters();
         }
     }
 }
