@@ -82,6 +82,13 @@ namespace HelloWPFApp
 
         private void Window_KeyDown(object sender, KeyEventArgs e)
         {
+            switch (e.Key)
+            {
+                case Key.Escape:
+                    this.Close();
+                    break;
+            }
+
             //Playerが利用不可
             if (!AvailablePlayer())
                 return;
@@ -106,7 +113,6 @@ namespace HelloWPFApp
                 case Key.PageDown:
                     PlayPrevMedia();
                     break;
-
             }
         }
 
@@ -374,6 +380,9 @@ namespace HelloWPFApp
         private void Window_Closed(object sender, EventArgs e)
         {
             settingParameters.SaveSettingParameters();
+
+            if (AvailablePlayer())
+                Stop();
         }
     }
 }
