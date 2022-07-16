@@ -9,7 +9,7 @@
         Drop="Window_Drop" KeyDown="Window_KeyDown" Loaded="Window_Loaded" Closed="Window_Closed">
     <Grid>
         <Grid  Margin="0,0,0,305" VerticalAlignment="Top" Height="50" Background="White" >
-            <TextBlock x:Name="timelineBlock" Margin="583,5,10,0" Text="TextBlock" TextWrapping="Wrap" VerticalAlignment="Top" HorizontalAlignment="Right"/>
+            <TextBlock x:Name="timelineBlock" Margin="583,5,10,0" Text="" TextWrapping="Wrap" VerticalAlignment="Top" HorizontalAlignment="Right"/>
             <Canvas x:Name="seekBarCanvas" Background="White" Margin="0,20,0,0"  
                     MouseMove="Canvas_MouseMove" MouseLeave="Canvas_MouseLeave" PreviewMouseDown="Canvas_PreviewMouseDown" PreviewMouseUp="Canvas_PreviewMouseUp"
                     SizeChanged="Canvas_SizeChanged">

@@ -26,11 +26,6 @@ namespace HelloWPFApp
         private bool canEditingSeekBar = false;
 
         private MediaState mediaState;
-        //private MediaState preMediaState;
-        private string[] paths;
-
-        //再生するメディアのパス配列の添え字
-        private int mediaIndex = -1;
 
         //スライダー更新用タイマー
         private DispatcherTimer sliderTimer;
@@ -46,27 +41,22 @@ namespace HelloWPFApp
 
         private SettingParameters settingParameters;
 
+        private MediaFilePathManager mFilePathManager;
+
         public MainWindow()
         {
             //Read setting values
             settingParameters = new SettingParameters();
 
-            //コマンドライン引数を取得
-            string[] args = Environment.GetCommandLineArgs();
-            int argsLen = args.Length;
-
             InitializeComponent();
 
             InitializeTimer();
 
-            //コマンドライン引数にパスが格納されている
-            if(args != null && argsLen > 1)
-            {
-                paths = new string[argsLen - 1];
+            mFilePathManager = new MediaFilePathManager();
 
-                //ファイルのパスだけ抜き出し
-                Array.Copy(args, 1, paths, 0, paths.Length);
-                PlayFirstMedia();
+            if (mFilePathManager.IsContainFile)
+            {
+                StartCurrentMedia();
             }
 
             SetWindowSizeInit();
@@ -80,11 +70,12 @@ namespace HelloWPFApp
 
         private void Window_Drop(object sender, DragEventArgs e)
         {
-            paths = (string[])e.Data.GetData(DataFormats.FileDrop);
+            string[] paths = (string[])e.Data.GetData(DataFormats.FileDrop);
+            mFilePathManager = new MediaFilePathManager(paths);
 
-            if(paths != null && paths.Length != 0)
+            if(mFilePathManager.IsContainFile)
             {
-                PlayFirstMedia();
+                StartCurrentMedia();
             }
 
         }
@@ -264,27 +255,26 @@ namespace HelloWPFApp
             myMediaElement.Position = TimeSpan.Zero;
         }
 
-        private void PlayFirstMedia()
-        {
-            mediaIndex = 0;
-            InitializeMedia(paths[mediaIndex]);
-            Play();
-        }
-
         private void PlayNextMedia()
         {
-            mediaIndex++;
-            mediaIndex = mediaIndex == paths.Length ? 0 : mediaIndex;
-            InitializeMedia(paths[mediaIndex]);
-            Play();
+            mFilePathManager.SetNextIndex();
+            StartCurrentMedia();
         }
 
         private void PlayPrevMedia()
         {
-            mediaIndex--;
-            mediaIndex = mediaIndex < 0 ? paths.Length - 1 : mediaIndex;
-            InitializeMedia(paths[mediaIndex]);
-            Play();
+            mFilePathManager.SetPrevIndex();
+            StartCurrentMedia();
+        }
+
+        private void StartCurrentMedia()
+        {
+            string path = mFilePathManager.CurrentMediaPath;
+            if (path != null)
+            {
+                InitializeMedia(path);
+                Play();
+            }
         }
 
         private void FastForward()
@@ -303,6 +293,7 @@ namespace HelloWPFApp
 
         private void Play()
         {
+
             myMediaElement.Play();
 
             mediaState = MediaState.Play;
