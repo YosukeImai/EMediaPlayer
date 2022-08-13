@@ -254,11 +254,15 @@ namespace HelloWPFApp
         private void InitializeMedia(string path)
         {
             Uri uri = new Uri(path);
+
+            //Set title name of screen
+            SetTitleOfScreen(path);
+
             //マニュアル設定
             myMediaElement.LoadedBehavior = MediaState.Manual;
             myMediaElement.Source = uri;
 
-            myMediaElement.Position = TimeSpan.Zero;
+            myMediaElement.Position = new TimeSpan(0, 0, 0);
         }
 
         private void PlayNextMedia()
@@ -279,6 +283,7 @@ namespace HelloWPFApp
             if (path != null)
             {
                 InitializeMedia(path);
+              
                 Play();
             }
         }
@@ -383,6 +388,12 @@ namespace HelloWPFApp
 
             if (AvailablePlayer())
                 Stop();
+        }
+
+        private void SetTitleOfScreen(string path)
+        {
+            string filename= System.IO.Path.GetFileNameWithoutExtension(path);
+            this.Title = filename;
         }
     }
 }
