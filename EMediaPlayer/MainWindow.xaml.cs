@@ -15,7 +15,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
 
-namespace HelloWPFApp
+namespace EMediaPlayer
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
@@ -112,6 +112,15 @@ namespace HelloWPFApp
                     break;
                 case Key.PageDown:
                     PlayPrevMedia();
+                    break;
+                case Key.M:
+                    VolumeController.Mute(this);
+                    break;
+                case Key.Up:
+                    VolumeController.VolumeUp(this);
+                    break;
+                case Key.Down:
+                    VolumeController.VolumeDown(this);
                     break;
             }
         }
