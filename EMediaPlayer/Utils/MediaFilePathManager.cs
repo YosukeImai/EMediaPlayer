@@ -42,12 +42,21 @@ namespace EMediaPlayer
 
         public void SetNextIndex()
         {
-            mediaIndex = mediaIndex == mediaPaths.Length ? 0 : mediaIndex + 1;
+            mediaIndex = mediaIndex == mediaPaths.Length -1 ? 0 : mediaIndex + 1;
         }
 
         public void SetPrevIndex()
         {
             mediaIndex = mediaIndex < 0 ? mediaPaths.Length - 1 : mediaIndex - 1;
+        }
+
+        public string[] AddPathHistory(string[] currentPathHistory, string mediaPath)
+        {
+            string[] result = new string[currentPathHistory.Length + 1];
+            Array.Copy(currentPathHistory, result, currentPathHistory.Length);
+            result[result.Length - 1] = mediaPath;
+
+            return result;
         }
 
         private void SetFilePath(string[] paths)

@@ -267,6 +267,8 @@ namespace EMediaPlayer
             //Set title name of screen
             SetTitleOfScreen(path);
 
+            AddPathHistory(path);
+
             //マニュアル設定
             myMediaElement.LoadedBehavior = MediaState.Manual;
             myMediaElement.Source = uri;
@@ -403,6 +405,13 @@ namespace EMediaPlayer
         {
             string filename= System.IO.Path.GetFileNameWithoutExtension(path);
             this.Title = filename;
+        }
+
+        private void AddPathHistory(string path)
+        {
+            string[] paths = settingParameters.PathHistory;
+            paths = mFilePathManager.AddPathHistory(paths, path);
+            settingParameters.PathHistory = paths;
         }
     }
 }

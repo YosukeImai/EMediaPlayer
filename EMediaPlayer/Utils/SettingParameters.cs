@@ -11,6 +11,9 @@ namespace EMediaPlayer
     {
         private double windowWidth;
         private double windowHeight;
+        private string pathHistory;
+
+        private const char deliminator = '|';
 
         public double WindowWidth
         {
@@ -30,10 +33,25 @@ namespace EMediaPlayer
             }
         }
 
+        public string[] PathHistory
+        {
+            get
+            {
+                return pathHistory.Split(deliminator);
+            }
+            set
+            {
+                pathHistory = string.Join(deliminator, value);
+                Properties.Settings.Default.pathHistory = pathHistory;
+            }
+        }
+        
+
         public SettingParameters()
         {
             windowWidth = Properties.Settings.Default.WindowWidth;
             windowHeight = Properties.Settings.Default.WindowHeight;
+            pathHistory = Properties.Settings.Default.pathHistory;
         }
 
         public void SaveSettingParameters()

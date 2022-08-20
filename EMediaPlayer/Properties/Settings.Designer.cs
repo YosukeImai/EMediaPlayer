@@ -46,5 +46,17 @@ namespace EMediaPlayer.Properties {
                 this["WindowHeight"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string pathHistory {
+            get {
+                return ((string)(this["pathHistory"]));
+            }
+            set {
+                this["pathHistory"] = value;
+            }
+        }
     }
 }
