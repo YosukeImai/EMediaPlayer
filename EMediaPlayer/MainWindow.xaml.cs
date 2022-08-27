@@ -370,13 +370,13 @@ namespace EMediaPlayer
 
             //円描画
             double radius = isTouchSeekBar ? 5 : 0;
-            double left = mousePoint.X - radius;
+            double left = Line1.X2 - radius;
             double top = Line1.Y1 - radius;
 
             Circle1.Width = Circle1.Height = radius * 2;
             Circle1.Margin = new Thickness(left, top, 0, 0);
 
-            Line2.X2 = width;
+            Line2.X2 = width+Line1.X1;
         }
 
         private void SetWindowSizeInit()
